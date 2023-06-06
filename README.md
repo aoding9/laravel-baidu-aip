@@ -1,5 +1,5 @@
 ### 安装
-`composer require aoding9/laravel-baidu-aip`
+`composer require aoding9/laravel-baidu-aip:dev-master`
 
 ### 配置
 配置文件如下，一般无需修改，直接到env中进行配置
