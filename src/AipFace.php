@@ -23,7 +23,7 @@ class AipFace extends \AipFace {
         return $response;
     }
 
-    public $faceToken;
+    // public $faceToken;
 
     /**
      * @Desc 通过url比对两张人脸的相似度，没有相似度则返回-1
