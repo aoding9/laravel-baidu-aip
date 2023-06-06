@@ -1,5 +1,15 @@
 ### 安装
-`composer require aoding9/laravel-baidu-aip:dev-master`
+`composer require aoding9/laravel-baidu-aip`
+
+如果安装失败，可能是composer镜像的问题，我切换为官方镜像就正常了，不过要魔法
+
+官方镜像
+
+`composer config -g repo.packagist composer https://packagist.org`
+
+阿里云镜像
+
+`composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/`
 
 ### 配置
 配置文件如下，一般无需修改，直接到env中进行配置
