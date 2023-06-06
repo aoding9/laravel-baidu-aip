@@ -1,0 +1,44 @@
+{
+    "name": "aoding9/laravel-baidu-aip",
+    "description": "基于Laravel对baiduAip的简单封装",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "aoding9",
+            "email": "xy5217733@163.com"
+        }
+    ],
+    "require": {
+        "laravel/framework": "^8",
+        "baidu-aip/api-php-sdk": "dev-master",
+        "php": "^7.4|^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yang\\BaiduAip\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+        }
+    },
+    "require-dev": {
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "yang\\BaiduAip\\BaiduAipServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+    },
+    "scripts-descriptions": {
+
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        }
+    }
+}
