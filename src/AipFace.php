@@ -5,7 +5,7 @@
  * @Date 2023/5/18 17:14
  */
 
-namespace Yang\BaiduAip;
+namespace Aoding9\BaiduAip;
 
 class AipFace extends \AipFace {
     /**

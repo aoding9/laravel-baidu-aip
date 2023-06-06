@@ -5,7 +5,7 @@
  * @Date 2023/5/4 10:44
  */
 
-namespace Yang\BaiduAip;
+namespace Aoding9\BaiduAip;
 
 
 class BaiduAipService {
