@@ -28,14 +28,14 @@ class BaiduAipServiceProvider extends ServiceProvider {
         // 注册别名
         $this->app->alias(BaiduAipService::class, 'baiduAip');
     }
-    //
-    // /**
-    //  * @Desc 延迟注册
-    //  * @return string[]
-    //  * @Date 2023/6/6 10:30
-    //  */
-    // public function provides()
-    // {
-    //     return [BaiduAipService::class, 'baiduAip'];
-    // }
+    
+    /**
+     * @Desc 延迟注册
+     * @return string[]
+     * @Date 2023/6/6 10:30
+     */
+    public function provides()
+    {
+        return [BaiduAipService::class, 'baiduAip'];
+    }
 }
