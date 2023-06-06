@@ -1,7 +1,7 @@
 {
     "name": "aoding9/laravel-baidu-aip",
     "description": "基于Laravel对baiduAip的简单封装",
-    "license": "MIT",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "aoding9",
