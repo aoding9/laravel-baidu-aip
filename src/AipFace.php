@@ -1,7 +1,7 @@
 <?php
 /**
  * @Desc baiduAip的人脸相关sdk封装
- * @Desc名字以Api结尾的方法是封装的api方法，api传参看官方文档，或者找到sdk的方法定义处，有中文注释
+ * @Desc 名字以Api结尾的方法是封装的api方法，api传参看官方文档，或者找到sdk的方法定义处，有中文注释
  * @User yangyang
  * @Date 2023/5/18 17:14
  */
@@ -23,9 +23,9 @@ class AipFace extends \AipFace {
         }
         return $response;
     }
+    
 
-    // public $faceToken;
-
+    
     /**
      * @Desc 通过url比对两张人脸的相似度，没有相似度则返回-1
      * @param $image1
@@ -167,7 +167,7 @@ class AipFace extends \AipFace {
      * @Date 2023/6/7 10:33
      */
     public function searchApi($image, $imageType = 'URL', ?array $groupIdList = null, array $options = []) {
-        $options["match_threshold"] = 80;
+        $options["match_threshold"] = $options["match_threshold"] ?? 80;
         return $this
                    ->parseResponse(
                        $this->search($image, $imageType, implode(',', $groupIdList ?? [$this->getGroupId()]), $options)
