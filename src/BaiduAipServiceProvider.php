@@ -20,7 +20,7 @@ class BaiduAipServiceProvider extends ServiceProvider {
         // 合并配置文件
         $this->mergeConfigFrom(__DIR__ . '/config/baiduAip.php', 'baiduAip');
     
-        // 单例注入容器
+        // 注册单例到容器，把config传进去
         $this->app->singleton(BaiduAipService::class, function($app) {
             return new BaiduAipService(config('baiduAip'));
         });

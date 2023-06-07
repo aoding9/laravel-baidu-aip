@@ -32,7 +32,12 @@ class BaiduAipService {
     protected function getSecretKey(): ?string {
         return $this->secretKey ?? $this->secretKey = $this->getConfig('secret_key');
     }
-
+    
+    /**
+     * @Desc 获取或初始化aipFace实例
+     * @return AipFace
+     * @Date 2023/6/7 10:37
+     */
     public function aipFace() {
         return $this->aipFace ?? $this->aipFace = new AipFace($this->getAppId(), $this->getApiKey(), $this->getSecretKey());
     }
