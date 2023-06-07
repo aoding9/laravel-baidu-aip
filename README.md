@@ -32,11 +32,13 @@
 
 官方镜像
 
-`composer config -g repo.packagist composer https://packagist.org`
+`composer config repo.packagist composer https://packagist.org`
 
 阿里云镜像
 
-`composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/`
+`composer config repo.packagist composer https://mirrors.aliyun.com/composer/`
+
+全局切换加-g
 
 ### 配置
 配置文件如下，一般无需修改，直接到env中进行配置
