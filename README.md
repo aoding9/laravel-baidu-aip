@@ -1,3 +1,30 @@
+### 简介
+最近做一个员工人脸打卡系统，自己封装了一下百度人脸识别SDK，方便以后重复利用。
+暂时只封装了一部分接口，具体有哪些方法可用，看继承自sdk同名类的`Aoding9\BaiduAip\AipFace`这个类，为了和sdk区分，封装的方法名以Api结尾，传参看官方文档，或者找到sdk的方法定义处，有中文注释，没封装的方法，直接按官方文档也可以调用。
+
+封装方法基于原有api，简化了传参和异常处理，例如matchFacesByUrl是对match的封装
+```php
+ // sdk的方法传参比较多，至少4个，同时需要把响应的score返回出来
+    public function matchApi($face1Image, $face1Type, $face2Image, $face2Type) {
+        return $this->parseResponse($this->match([
+                                                     [
+                                                         'image'      => $face1Image,
+                                                         'image_type' => $face1Type,
+                                                     ], [
+                                                         'image'      => $face2Image,
+                                                         'image_type' => $face2Type,
+                                                     ],
+                                                 ]))['result']['score'] ?? 0;
+    }
+// 因为url类型的人脸比对比较常用，所以单独定义一个方法，只传两个图片url即可
+	public function matchFacesByUrl($image1, $image2) {
+        return $this->matchApi($image1, 'URL', $image2, 'URL');
+    }
+```
+外部调用：
+![百度人脸识别SDK的简单封装](https://cdn.learnku.com/uploads/images/202306/06/78338/HtKitETh6B.png!large)
+![百度人脸识别SDK的简单封装](https://cdn.learnku.com/uploads/images/202306/06/78338/rO79NSwFDz.png!large)
+
 ### 安装
 `composer require aoding9/laravel-baidu-aip`
 
