@@ -190,6 +190,6 @@ class AipFace extends \AipFace {
      * @Date 2023/6/7 10:34
      */
     public function getGroupUsersApi($groupId = null, $options = []) {
-        return $this->parseResponse($this->getGroupUsers($groupId ?? $this->getGroupId(), $options));
+        return $this->parseResponse($this->getGroupUsers($groupId ?? $this->getGroupId(), $options))['result']['user_id_list']??[];
     }
 }
