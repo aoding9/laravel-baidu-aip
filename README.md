@@ -38,6 +38,19 @@
 
 `composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/`
 
+因为官方镜像下载太慢了，如果不想切换镜像，可以把以下代码添加到composer.json，这样就能直接从github安装了
+```json
+{
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/aoding9/laravel-baidu-aip"
+    }
+  ]
+}
+
+```
+
 ### 配置
 配置文件如下，一般无需修改，直接到env中进行配置
 ```php
