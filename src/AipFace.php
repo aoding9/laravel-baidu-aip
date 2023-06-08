@@ -1,13 +1,12 @@
 <?php
 /**
- * @Desc
+ * @Desc baiduAip的人脸相关sdk封装
+ * @Desc名字以Api结尾的方法是封装的api方法，api传参看官方文档，或者找到sdk的方法定义处，有中文注释
  * @User yangyang
  * @Date 2023/5/18 17:14
  */
 
 namespace Aoding9\BaiduAip;
-
-use App\Exceptions\BusinessException;
 
 class AipFace extends \AipFace {
     /**
@@ -77,20 +76,43 @@ class AipFace extends \AipFace {
                                                  ]))['result']['score'] ?? 0;
     }
     
+    /**
+     * @Desc 创建用户组
+     * @return array|mixed
+     * @throws \Exception
+     * @Date 2023/6/7 10:31
+     */
     public function groupAddApi() {
         return $this->parseResponse($this->groupAdd($this->getGroupId()));
     }
     
+    /**
+     * @Desc 删除用户组
+     * @return array|mixed
+     * @throws \Exception
+     * @Date 2023/6/7 10:31
+     */
     public function groupDeleteApi() {
         return $this->parseResponse($this->groupDelete($this->getGroupId()));
     }
     
+    /**
+     * @Desc 获取用户组列表
+     * @return array|mixed
+     * @throws \Exception
+     * @Date 2023/6/7 10:31
+     */
     public function getGroupListApi() {
         return $this->parseResponse($this->getGroupList());
     }
     
     public $groupId;
     
+    /**
+     * @Desc 获取默认用户组id（来自env配置项）
+     * @return mixed
+     * @Date 2023/6/7 10:32
+     */
     public function getGroupId() {
         return $this->groupId ?? $this->setGroupId(app(BaiduAipService::class)->getConfig('group_id'));
     }
@@ -99,26 +121,74 @@ class AipFace extends \AipFace {
         return $this->groupId = $groupId;
     }
     
+    /**
+     * @Desc 给用户组添加用户
+     * @param        $image
+     * @param        $userId
+     * @param null   $groupId
+     * @param string $imageType
+     * @param array  $options
+     * @return int|mixed
+     * @throws \Exception
+     * @Date 2023/6/7 10:32
+     */
     public function addUserApi($image, $userId, $groupId = null, $imageType = 'URL', $options = []) {
         return $this->parseResponse($this->addUser($image, $imageType, $groupId ?? $this->getGroupId(), $userId, $options))['face_token'] ?? 0;
     }
     
+    /**
+     * @Desc 更新用户人脸库
+     * @param        $image
+     * @param        $userId
+     * @param null   $groupId
+     * @param string $imageType
+     * @param array  $options
+     * @return int|mixed
+     * @throws \Exception
+     * @Date 2023/6/7 10:33
+     */
     public function updateUserApi($image, $userId, $groupId = null, $imageType = 'URL', $options = []) {
         return $this->parseResponse($this->updateUser($image, $imageType, $groupId ?? $this->getGroupId(), $userId, $options))['face_token'] ?? 0;
     }
     
+    /**
+     * @Desc 从用户组删除用户
+     * @param      $userId
+     * @param null $groupId
+     * @return array|mixed
+     * @throws \Exception
+     * @Date 2023/6/7 10:33
+     */
     public function deleteUserApi($userId, $groupId = null) {
         return $this->parseResponse($this->deleteUser($groupId ?? $this->getGroupId(), $userId));
     }
     
+    /**
+     * @Desc 根据人脸图片，从用户组检索用户信息
+     * @param            $image
+     * @param string     $imageType
+     * @param array|null $groupIdList
+     * @param array      $options
+     * @return mixed
+     * @throws \Exception
+     * @Date 2023/6/7 10:33
+     */
     public function searchApi($image, $imageType = 'URL', ?array $groupIdList = null, array $options = []) {
-        $options["match_threshold"] = 80;
+        $options["match_threshold"] = $options["match_threshold"]??80;
         return $this
                    ->parseResponse(
                        $this->search($image, $imageType, implode(',', $groupIdList ?? [$this->getGroupId()]), $options)
                    )['result']['user_list'];
     }
     
+    /**
+     * @Desc 获取用户组的用户列表
+     * @param null  $groupId
+     * @param array $options
+     * @return array|mixed
+     * @throws \Exception
+     * @Date 2023/6/7 10:34
+     */
     public function getGroupUsersApi($groupId = null, $options = []) {
         return $this->parseResponse($this->getGroupUsers($groupId ?? $this->getGroupId(), $options));
     }
