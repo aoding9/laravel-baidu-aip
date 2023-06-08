@@ -28,9 +28,9 @@
 ### 安装
 `composer require aoding9/laravel-baidu-aip`
 
-如果安装失败，可能是composer镜像的问题，我切换为官方镜像就正常了，不过要魔法
+如果安装失败，可能是composer镜像的问题，我切换为官方源就正常了，不过要魔法
 
-官方镜像
+官方源
 
 `composer config -g repo.packagist composer https://packagist.org`
 
@@ -38,7 +38,7 @@
 
 `composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/`
 
-因为官方镜像下载太慢了，如果不想切换镜像，可以把以下代码添加到composer.json，这样就能直接从github安装了
+因为官方源下载太慢了，如果不想切换镜像，可以把以下代码添加到composer.json，这样就能直接从github安装了
 ```json
 {
   "repositories": [
