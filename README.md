@@ -96,13 +96,12 @@ class Staff extends Model {
         $aipFace = app(BaiduAipService::class)->aipFace();
         try {
             $staffId = $aipFace->searchApi($face)[0]['user_id'];
+            $staff = Staff::findOrFail($staffId);
+
         } catch (\Exception $e) {
             throw new \Exception('未匹配到人员信息',$e->getCode());
         }
     
-        if (!$staff = Staff::find($staffId)) {
-            throw new \Exception('未匹配到人员信息');
-        }
         return $staff;
     }
 }
@@ -121,7 +120,7 @@ use App\Models\Staff;
 
 
 class StaffObserver {
-   // 创建用户时，创建用户，并将头像注册到用户人脸库，绑定用户id
+   // 创建用户时，往用户组注册用户，并将头像添加到用户人脸库，绑定用户id（如果之前没创建用户组，需要先创建用户组）
     public function created(Staff $model) {
         $aipFace = app(BaiduAipService::class)->aipFace();
         $aipFace->addUserApi($model->avatar_url, $model->id);
