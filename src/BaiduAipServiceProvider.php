@@ -7,9 +7,12 @@ use Illuminate\Support\ServiceProvider;
 class BaiduAipServiceProvider extends ServiceProvider {
     public function boot() {
         // 将配置文件发布到/config目录下
-        $this->publishes([
-                             __DIR__ . '/config/baiduAip.php' => config_path('baiduAip.php'),
-                         ]);
+        if ($this->app->runningInConsole()){
+            $this->publishes([
+                                 __DIR__ . '/config/baiduAip.php' => config_path('baiduAip.php'),
+                             ]);
+        }
+  
         // 发布文件
         // $this->publishes([
         //                      \dirname(__DIR__).'/migrations/' => database_path('migrations'),
