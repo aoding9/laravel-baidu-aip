@@ -8,10 +8,10 @@
 基于原有api，简化了传参和异常处理，例如matchFacesByUrl是对match的封装，参数从4个减少到2个。
 
 人脸比对示例：
-![](https://aoding9.top/uploads/images/2023-06-12/55fc4aa48e8ad09ac4bc7e2a9b2de46b648689d5b7dff.png)
 
+![百度人脸识别SDK的简单封装](https://cdn.learnku.com/uploads/images/202306/06/78338/HtKitETh6B.png!large)
 
-![](https://aoding9.top/uploads/images/2023-06-12/dd3a4542efe7391cdae1dfb2e1b6e836648689de1d4cf.png)
+![百度人脸识别SDK的简单封装](https://cdn.learnku.com/uploads/images/202306/06/78338/rO79NSwFDz.png!large)
 
 ### 安装
 `composer require aoding9/laravel-baidu-aip`
