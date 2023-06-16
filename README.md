@@ -20,7 +20,7 @@
 
 `composer config repo.packagist composer https://packagist.org`
 
-因为官方源下载太慢了，国内镜像又有各种问题可能导致安装失败，可以把以下代码添加到composer.json，直接从github安装
+因为官方源下载慢，国内镜像又有各种问题可能导致安装失败，可以把以下代码添加到composer.json，直接从github安装
 
 ```json
 {
@@ -83,22 +83,20 @@ function test() {
 
 use Illuminate\Database\Eloquent\Model;
 use Aoding9\BaiduAip\BaiduAipService;
-
 class Staff extends Model {
     /**
      * @Desc 根据人脸，匹配人员model，需要提前增加用户组，并且把用户的人脸注册进去，绑定userid
      * @param string $face 上传的图片url
      */
-    public static function getStaffByFaceImage($face) {
+    public static function getStaffByFaceImage($face): Staff {
         $aipFace = app(BaiduAipService::class)->aipFace();
         try {
-            $staffId = $aipFace->searchApi($face)[0]['user_id'];
-            $staff = Staff::findOrFail($staffId);
-
+            $staffId = $aipFace->searchApi($face); // 返回用户id或null，或抛异常
+            $staff = Staff::findOrFail($staffId); // 未找到也抛异常
         } catch (\Exception $e) {
             throw new \Exception('未匹配到人员信息',$e->getCode());
         }
-    
+
         return $staff;
     }
 }
@@ -107,7 +105,7 @@ class Staff extends Model {
 $face = request()->input('face');
 $staff = Staff::getStaffByFaceImage($face);
 ```
-3、用户组管理`groupAddApi|groupDeleteApi|getGroupListApi|getGroupUsersApi`
+3、用户组管理`groupAddApi|groupDeleteApi|getGroupListApi|getGroupUsersApi|getUserApi`
 ```php
 use Aoding9\BaiduAip\BaiduAipService;
 
@@ -118,6 +116,7 @@ use Aoding9\BaiduAip\BaiduAipService;
         dd($aipFace->groupDeleteApi()); // 删除用户组
         dd($aipFace->getGroupListApi()); // 获取用户组列表
         dd($aipFace->getGroupUsersApi()); // 获取用户组的用户id列表
+        dd($aipFace->getUserApi(1)); // 获取根据用户id获取user_info
     }
 
 ```
@@ -125,31 +124,38 @@ use Aoding9\BaiduAip\BaiduAipService;
 
 4、结合模型观察者，管理用户资料`addUserApi|updateUserApi|deleteUserApi`
 ```php
-// 创建、更新和删除用户
+<?php
 namespace App\Observers;
-use Aoding9\BaiduAip\BaiduAipService;
 use App\Models\Staff;
-
+use Aoding9\BaiduAip\BaiduAipService;
+use Log;
 
 class StaffObserver {
-   // 创建用户时，往用户组注册用户，并将头像添加到用户人脸库，绑定用户id（如果之前没创建用户组，需要先创建用户组）
-    public function created(Staff $model) {
-        $aipFace = app(BaiduAipService::class)->aipFace();
-        $aipFace->addUserApi($model->avatar_url, $model->id);
-    }
+    public $aipFace;
 
-  // 头像变更时，更新用户的人脸库
-    public function updating(Staff $model) {
-        if ($model->isDirty($model->avatar) && $model->avatar) {
-            $aipFace = app(BaiduAipService::class)->aipFace();
-            $aipFace->updateUserApi($model->avatar_url, $model->id);
+    public function __construct() {
+        if (!$this->aipFace) {
+            $this->aipFace = app(BaiduAipService::class)->aipFace();
         }
     }
 
-    // 删除用户时，注销用户组里的用户
+    // 创建用户时，往用户组注册用户，并将头像添加到用户人脸库，绑定用户id（如果之前没创建用户组，需要先创建用户组），把姓名也存入user_info
+    public function created(Staff $model) {
+        $result = $this->aipFace->addUserApi($model->avatar_url, $model->id, null, null, ['user_info' => $model->name]);
+        Log::info('人脸注册成功:' . $model->name, $result);
+    }
+    // 头像变更时，更新用户的人脸库
+    public function updating(Staff $model) {
+        if ($model->avatar) {
+            $result = $this->aipFace->updateUserApi($model->avatar_url, $model->id, null, null, ['user_info' => $model->name]);
+            Log::info('人脸更新成功:' . $model->name, $result);
+        }
+    }
+
+    // 删除用户时，删除用户组里的用户
     public function deleted(Staff $model) {
-        $aipFace = app(BaiduAipService::class)->aipFace();
-        $aipFace->deleteUserApi($model->id);
+        $result = $this->aipFace->deleteUserApi($model->id);
+        Log::info('人脸删除成功:' . $model->name, $result);
     }
 }
 

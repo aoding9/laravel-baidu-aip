@@ -1,12 +1,14 @@
 <?php
 /**
  * @Desc baiduAip的人脸相关sdk封装
- * @Desc名字以Api结尾的方法是封装的api方法，api传参看官方文档，或者找到sdk的方法定义处，有中文注释
+ * @Desc 名字以Api结尾的方法是封装的api方法，api传参看官方文档，或者找到sdk的方法定义处，有中文注释
  * @User yangyang
  * @Date 2023/5/18 17:14
  */
 
 namespace Aoding9\BaiduAip;
+
+use Illuminate\Support\Facades\Log;
 
 class AipFace extends \AipFace {
     /**
@@ -19,14 +21,14 @@ class AipFace extends \AipFace {
         $response = $response ?? [];
         // 请求成功，但是未获得期望的结果，抛异常
         if (!array_key_exists('error_code', $response) || $response['error_code'] !== 0) {
-            $msg=$response['error_msg'] ?? '请求出错';
+            $msg = $response['error_msg'] ?? '请求出错';
             $code = (int)($response['error_code'] ?? -1);
-            if(function_exists('throwBusinessErr')){
-                throwBusinessErr($msg,$code);
-            }else{
+            if (function_exists('throwBusinessErr')) {
+                throwBusinessErr($msg, $code);
+                Log::error('baiduAip请求出错', compact('code', 'msg'));
+            } else {
                 throw new \Exception($msg ?? '请求出错', $code);
             }
-            
         }
         return $response;
     }
@@ -132,8 +134,8 @@ class AipFace extends \AipFace {
      * @throws \Exception
      * @Date 2023/6/7 10:32
      */
-    public function addUserApi($image, $userId, $groupId = null, $imageType = 'URL', $options = []) {
-        return $this->parseResponse($this->addUser($image, $imageType, $groupId ?? $this->getGroupId(), $userId, $options))['face_token'] ?? 0;
+    public function addUserApi($image, $userId, $groupId = null, $imageType = null, $options = []) {
+        return $this->parseResponse($this->addUser($image, $imageType ?? 'URL', $groupId ?? $this->getGroupId(), $userId, $options)) ?? 0;
     }
     
     /**
@@ -147,8 +149,9 @@ class AipFace extends \AipFace {
      * @throws \Exception
      * @Date 2023/6/7 10:33
      */
-    public function updateUserApi($image, $userId, $groupId = null, $imageType = 'URL', $options = []) {
-        return $this->parseResponse($this->updateUser($image, $imageType, $groupId ?? $this->getGroupId(), $userId, $options))['face_token'] ?? 0;
+    public function updateUserApi($image, $userId, $groupId = null, $imageType = null, $options = []) {
+        $options['action_type'] = $options['action_type'] ?? 'REPLACE'; // 文档默认为UPDATE,我改为了REPLACE
+        return $this->parseResponse($this->updateUser($image, $imageType ?? 'URL', $groupId ?? $this->getGroupId(), $userId, $options)) ?? 0;
     }
     
     /**
@@ -173,12 +176,14 @@ class AipFace extends \AipFace {
      * @throws \Exception
      * @Date 2023/6/7 10:33
      */
-    public function searchApi($image, $imageType = 'URL', ?array $groupIdList = null, array $options = []) {
-        $options["match_threshold"] = $options["match_threshold"]??80;
-        return $this
-                   ->parseResponse(
-                       $this->search($image, $imageType, implode(',', $groupIdList ?? [$this->getGroupId()]), $options)
-                   )['result']['user_list'];
+    public function searchApi($image, $imageType = null, ?array $groupIdList = null, array $options = []) {
+        $options["match_threshold"] = $options["match_threshold"] ?? 80;
+        $response = $this
+            ->parseResponse(
+                $this->search($image, $imageType ?? 'URL', implode(',', $groupIdList ?? [$this->getGroupId()]), $options)
+            );
+        // Log::info($image, $response);
+        return $response['result']['user_list'][0]['user_id'] ?? null;
     }
     
     /**
@@ -190,6 +195,18 @@ class AipFace extends \AipFace {
      * @Date 2023/6/7 10:34
      */
     public function getGroupUsersApi($groupId = null, $options = []) {
-        return $this->parseResponse($this->getGroupUsers($groupId ?? $this->getGroupId(), $options))['result']['user_id_list']??[];
+        return $this->parseResponse($this->getGroupUsers($groupId ?? $this->getGroupId(), $options));
+    }
+    
+    /**
+     * @Desc 获取用户信息
+     * @param int  $userId
+     * @param null $groupId
+     * @return array|mixed
+     * @throws \Exception
+     * @Date 2023/6/7 10:34
+     */
+    public function getUserApi($userId, $groupId = null) {
+        return $this->parseResponse($this->getUser($userId, $groupId ?? $this->getGroupId()));
     }
 }
