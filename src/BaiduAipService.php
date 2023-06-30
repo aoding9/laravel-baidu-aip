@@ -9,11 +9,11 @@ namespace Aoding9\BaiduAip;
 
 
 class BaiduAipService {
-    public array $config;
-    public ?string $appId;
-    public ?string $apiKey;
-    public ?string $secretKey;
-    protected array $guzzleOptions = [];
+    public $config;
+    public  $appId;
+    public  $apiKey;
+    public  $secretKey;
+    protected $guzzleOptions = [];
     protected $aipFace;
 
     public function __construct($config = []) {
